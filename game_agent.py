@@ -212,7 +212,6 @@ class MinimaxPlayer(IsolationPlayer):
         if self.time_left() < self.TIMER_THRESHOLD:
             raise SearchTimeout()
 
-        # TODO: finish this function!
         legal_moves = game.get_legal_moves()
         best_move = (-1, -1)
         best_score = float("-inf")
@@ -348,4 +347,51 @@ class AlphaBetaPlayer(IsolationPlayer):
             raise SearchTimeout()
 
         # TODO: finish this function!
-        raise NotImplementedError
+        legal_moves = game.get_legal_moves()
+        best_move = (-1, -1)
+        for move in game.get_legal_moves():
+            value = self._min_value(game.forecast_move(move), depth - 1, alpha, beta)
+            if value > alpha:
+                alpha = value
+                best_move = move
+        return best_move
+
+    def _min_value(self, game, depth, alpha, beta):
+        if self.time_left() < self.TIMER_THRESHOLD:
+            raise SearchTimeout()
+
+        legal_moves = game.get_legal_moves()
+        value = float('inf')
+
+        if not legal_moves:
+            return value
+        if depth == 0:
+            return self.score(game, self)
+
+        
+        for move in legal_moves:
+            value = min(value, self._max_value(game.forecast_move(move), depth - 1, alpha, beta), alpha , beta)
+            if(value <= alpha):
+                return value
+            beta = min(beta, value) 
+        return value
+
+    def _max_value(self, game, depth, alpha , beta):
+        if self.time_left() < self.TIMER_THRESHOLD:
+            raise SearchTimeout()
+
+        legal_moves = game.get_legal_moves()
+        value = float('-inf')
+
+        if not legal_moves:
+            return value
+        if depth == 0:
+            return self.score(game, self)
+
+        
+        for move in legal_moves:
+            value = max(value, self._min_value(game.forecast_move(move), depth - 1, alpha, beta), alpha , beta)
+            if(value >= beta):
+                return value
+            alpha = max(alpha, value) 
+        return value
