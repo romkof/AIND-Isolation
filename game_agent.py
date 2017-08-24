@@ -35,7 +35,18 @@ def custom_score(game, player):
         The heuristic value of the current game state to the specified player.
     """
     # TODO: finish this function!
-    raise NotImplementedError
+    #raise NotImplementedError
+    if game.is_loser(player):
+        return float("-inf")
+
+    if game.is_winner(player):
+        return float("inf")
+    my_moves = len(game.get_legal_moves(player))
+    opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
+
+    return float(my_moves - opp_moves*2.5)
+
+
 
 
 def custom_score_2(game, player):
@@ -60,8 +71,19 @@ def custom_score_2(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
-    # TODO: finish this function!
-    raise NotImplementedError
+    if game.is_loser(player):
+        return float("-inf")
+
+    if game.is_winner(player):
+        return float("inf")
+
+    w, h = game.width / 2., game.height / 2.
+    y, x = game.get_player_location(player)
+    center_distance = float((h - y) + (w - x))
+    my_moves = len(game.get_legal_moves(player))
+    opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
+
+    return float(my_moves/opp_moves) * center_distance
 
 
 def custom_score_3(game, player):
@@ -87,7 +109,20 @@ def custom_score_3(game, player):
         The heuristic value of the current game state to the specified player.
     """
     # TODO: finish this function!
-    raise NotImplementedError
+    if game.is_loser(player):
+        return float("-inf")
+
+    if game.is_winner(player):
+        return float("inf")
+
+    w, h = game.width / 2., game.height / 2.
+    y, x = game.get_player_location(player)
+    opp_y, opp_x = game.get_player_location(game.get_opponent(player))
+    my_center_distance = float((h - y) + (w - x))
+    my_moves = len(game.get_legal_moves(player))
+    opp_center_distance = float((h - opp_y) + (w - opp_x))
+    opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
+    return float((my_moves* my_center_distance)/(opp_moves*opp_center_distance))
 
 
 class IsolationPlayer:
