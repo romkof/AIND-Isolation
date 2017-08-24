@@ -215,7 +215,7 @@ class MinimaxPlayer(IsolationPlayer):
         legal_moves = game.get_legal_moves()
         best_move = (-1, -1)
         best_score = float("-inf")
-        for move in game.get_legal_moves():
+        for move in legal_moves:
             value = self._min_value(game.forecast_move(move), depth - 1)
             if value > best_score:
                 best_score = value
@@ -347,13 +347,16 @@ class AlphaBetaPlayer(IsolationPlayer):
             raise SearchTimeout()
 
         # TODO: finish this function!
+
         legal_moves = game.get_legal_moves()
         best_move = (-1, -1)
-        for move in game.get_legal_moves():
+        best_score = float("-inf")
+        for move in legal_moves:
             value = self._min_value(game.forecast_move(move), depth - 1, alpha, beta)
-            if value > alpha:
-                alpha = value
+            if value > best_score:
+                best_score = value
                 best_move = move
+            alpha = max(alpha, value)
         return best_move
 
     def _min_value(self, game, depth, alpha, beta):
@@ -370,7 +373,7 @@ class AlphaBetaPlayer(IsolationPlayer):
 
         
         for move in legal_moves:
-            value = min(value, self._max_value(game.forecast_move(move), depth - 1, alpha, beta), alpha , beta)
+            value = min(value, self._max_value(game.forecast_move(move), depth - 1, alpha, beta))
             if(value <= alpha):
                 return value
             beta = min(beta, value) 
@@ -390,7 +393,7 @@ class AlphaBetaPlayer(IsolationPlayer):
 
         
         for move in legal_moves:
-            value = max(value, self._min_value(game.forecast_move(move), depth - 1, alpha, beta), alpha , beta)
+            value = max(value, self._min_value(game.forecast_move(move), depth - 1, alpha, beta))
             if(value >= beta):
                 return value
             alpha = max(alpha, value) 
