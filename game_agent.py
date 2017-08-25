@@ -47,8 +47,6 @@ def custom_score(game, player):
     return float(my_moves - opp_moves*2.5)
 
 
-
-
 def custom_score_2(game, player):
     """Calculate the heuristic value of a game state from the point of view
     of the given player.
@@ -80,9 +78,13 @@ def custom_score_2(game, player):
     w, h = game.width / 2., game.height / 2.
     y, x = game.get_player_location(player)
     center_distance = float((h - y) + (w - x))
+
     my_moves = len(game.get_legal_moves(player))
     opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
-
+    if not my_moves:
+        return float("-inf")
+    if not opp_moves:
+        return float("inf") 
     return float(my_moves/opp_moves) * center_distance
 
 
@@ -122,7 +124,17 @@ def custom_score_3(game, player):
     my_moves = len(game.get_legal_moves(player))
     opp_center_distance = float((h - opp_y) + (w - opp_x))
     opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
-    return float((my_moves* my_center_distance)/(opp_moves*opp_center_distance))
+
+    if not my_moves:
+        return float("-inf")
+    if not opp_moves:
+        return float("inf") 
+    if not my_center_distance:
+        my_center_distance = 1
+    if not opp_center_distance:
+        opp_center_distance =1
+        
+    return float((my_moves/my_center_distance)/(opp_moves/opp_center_distance))
 
 
 class IsolationPlayer:
@@ -337,7 +349,7 @@ class AlphaBetaPlayer(IsolationPlayer):
         try:
             # The try/except block will automatically catch the exception
             # raised when the timer is about to expire.
-            depth = 0    
+            depth = 1    
             while True:
                 best_move =self.alphabeta(game, depth) 
                 depth = depth +1
