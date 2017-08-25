@@ -125,16 +125,15 @@ def custom_score_3(game, player):
     opp_center_distance = float((h - opp_y) + (w - opp_x))
     opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
 
-    if not my_moves:
+
+    my_val = my_moves-my_center_distance
+    opp_val = opp_moves-opp_center_distance
+    if not my_val:
         return float("-inf")
-    if not opp_moves:
+    if not opp_val:
         return float("inf") 
-    if not my_center_distance:
-        my_center_distance = 1
-    if not opp_center_distance:
-        opp_center_distance =1
-        
-    return float((my_moves/my_center_distance)/(opp_moves/opp_center_distance))
+    
+    return float(my_val/opp_val)
 
 
 class IsolationPlayer:
