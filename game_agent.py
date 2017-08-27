@@ -41,11 +41,20 @@ def custom_score(game, player):
 
     if game.is_winner(player):
         return float("inf")
+
+    w, h = game.width / 2., game.height / 2.
+    y, x = game.get_player_location(player)
+    center_distance = float((h - y) + (w - x))
+
     my_moves = len(game.get_legal_moves(player))
     opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
-
-    return float(my_moves - opp_moves*1.5)
-
+    if not my_moves:
+        return float("-inf")
+    if not opp_moves:
+        return float("inf")
+   
+    center_reward =1.5 if center_distance == 0 else abs(1.5 - center_distance) if center_distance < 1.5 else 0.5
+    return float(my_moves/opp_moves) * center_reward
 
 def custom_score_2(game, player):
     """Calculate the heuristic value of a game state from the point of view
@@ -74,20 +83,10 @@ def custom_score_2(game, player):
 
     if game.is_winner(player):
         return float("inf")
-
-    w, h = game.width / 2., game.height / 2.
-    y, x = game.get_player_location(player)
-    center_distance = float((h - y) + (w - x))
-
     my_moves = len(game.get_legal_moves(player))
     opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
-    if not my_moves:
-        return float("-inf")
-    if not opp_moves:
-        return float("inf")
-   
-    center_reward =1.5 if center_distance == 0 else abs(1.5 - center_distance) if center_distance < 1.5 else 0.5
-    return float(my_moves/opp_moves) * center_reward
+
+    return float(my_moves - opp_moves*1.5)
 
 
 def custom_score_3(game, player):
