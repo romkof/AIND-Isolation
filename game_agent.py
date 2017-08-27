@@ -44,7 +44,7 @@ def custom_score(game, player):
     my_moves = len(game.get_legal_moves(player))
     opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
 
-    return float(my_moves - opp_moves*2.5)
+    return float(my_moves - opp_moves*1.5)
 
 
 def custom_score_2(game, player):
@@ -84,8 +84,10 @@ def custom_score_2(game, player):
     if not my_moves:
         return float("-inf")
     if not opp_moves:
-        return float("inf") 
-    return float(my_moves/opp_moves) * center_distance
+        return float("inf")
+   
+    center_reward =1.5 if center_distance == 0 else abs(1.5 - center_distance) if center_distance < 1.5 else 0.5
+    return float(my_moves/opp_moves) * center_reward
 
 
 def custom_score_3(game, player):
@@ -125,14 +127,16 @@ def custom_score_3(game, player):
     opp_center_distance = float((h - opp_y) + (w - opp_x))
     opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
 
+    my_center_reward =1.5 if my_center_distance == 0 else abs(1.5 - my_center_distance) if my_center_distance < 1.5 else 0.5
+    opp_center_reward =1.5 if opp_center_distance == 0 else abs(1.5 - opp_center_distance) if opp_center_distance < 1.5 else 0.5
 
-    my_val = my_moves-my_center_distance
-    opp_val = opp_moves-opp_center_distance
+    my_val = my_moves*my_center_reward
+    opp_val = opp_moves*opp_center_reward
+
     if not my_val:
         return float("-inf")
     if not opp_val:
-        return float("inf") 
-    
+        return float("inf")
     return float(my_val/opp_val)
 
 
